@@ -1,0 +1,18 @@
+{
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "@ionic/angular/common",
+    "@ionic/angular"
+  ],
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/.retool_types/**": true,
+    "**/*tsconfig.json": true,
+    ".cache": true,
+    "retool.config.json": true
+  }
+}

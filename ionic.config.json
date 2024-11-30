@@ -1,0 +1,7 @@
+{
+  "name": "tha-frontend",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
