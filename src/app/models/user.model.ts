@@ -1,11 +1,11 @@
 import { QrCode } from './qrCode.model';
 export interface User {
-  id: string | null;
-  email: string | null;
-  profile_pic_url: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  phoneNumber: string | null;
+  id: string | null | undefined;
+  email: string | null | undefined;
+  profile_pic_url: string | null | undefined;
+  firstName: string | null | undefined;
+  lastName: string | null | undefined;
+  phoneNumber: string | null | undefined;
 
   qrCodes: QrCode[];
 }

@@ -7,6 +7,7 @@ export interface QrCode {
   itemName: string | null;
   itemDetails?: string | null;
   itemCategory?: string | null;
+  isClaimed?: boolean;
 
   userId?: string;
   user?: User;

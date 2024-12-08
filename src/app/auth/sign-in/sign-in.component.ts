@@ -60,7 +60,7 @@ export class SignInComponent implements OnInit {
 
   signInUser() {
     if (!this.signInFormData.valid) return;
-
+    console.log(this.signInFormData.value);
     this.isLoading = true;
     const email = this.signInFormData.value.email;
     const password = this.signInFormData.value.password;
@@ -74,10 +74,10 @@ export class SignInComponent implements OnInit {
 
     this.authService.signIn(email, password).subscribe({
       next: (res) => {
-        console.log(res);
         if (!res || Object.keys(res).length === 0)
           throw new Error('Invalid credentials');
-        this.authService.setUserData(res as User);
+
+        this.authService.setUserData(res?.user as User);
         this.isLoading = false;
         this.router.navigate(['dashboard']);
       },

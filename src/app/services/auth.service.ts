@@ -12,24 +12,60 @@ const LocalStorageUserKey = 'authUser';
 export class AuthService {
   authUser = new BehaviorSubject<User | null>(null);
   private http = inject(HttpClient);
-  constructor() {}
+  constructor() {
+    this.restoreUserFromLocalStorage();
+  }
+  private restoreUserFromLocalStorage() {
+    const storedUser = localStorage.getItem('authUser');
+    if (storedUser) {
+      try {
+        const parsedUser: User = JSON.parse(storedUser);
 
+        // Validate the parsed user data if needed
+        if (this.isValidUser(parsedUser)) {
+          this.authUser.next(parsedUser);
+        } else {
+          // Clear invalid localStorage data
+          localStorage.removeItem('authUser');
+        }
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('authUser');
+      }
+    }
+  }
   isEmailRegistered(email: string): Observable<Boolean> {
     return this.http.post<Boolean>(`${API_URL}/is-email-registered`, { email });
   }
 
-  signUp(email: string, password: string) {
-    return this.http.post(API_URL + '/sign-up', { email, password });
+  signUp(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    phoneNumber: string
+  ) {
+    return this.http.post(API_URL + '/sign-up', {
+      email,
+      password,
+      firstName,
+      lastName,
+      phoneNumber,
+    });
   }
   signIn(
     email: string,
     password: string // : Promise<Subscription> | Error
   ) {
-    return this.http.post(
+    return this.http.post<any>(
       API_URL + '/log-in',
       { email, password },
       { withCredentials: true }
     );
+  }
+  getCurrentUser(): User | null {
+    // Returns the current value of the BehaviorSubject
+    return this.authUser.getValue();
   }
 
   setUserData(user: User) {
@@ -70,5 +106,10 @@ export class AuthService {
     console.log('Passed Auth Guard Front End!!');
 
     return true;
+  }
+
+  private isValidUser(user: User): boolean {
+    // Add your custom validation logic
+    return user && user.id != null;
   }
 }

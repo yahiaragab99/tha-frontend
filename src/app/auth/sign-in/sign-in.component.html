@@ -1,72 +1,91 @@
-<ion-content class="bg-yellow-50" style="--ion-background-color: #FFFFFF">
+<ion-content class="bg-yellow-50" style="--ion-background-color: #ffffff">
   @if (isLoading) {
-    <div class="flex items-center justify-center min-h-screen">
-      <ion-spinner class="max-w-20 max-h-20" name="circular" color="light"></ion-spinner>
-    </div>
-  }
-    @else { 
-      <div class="flex items-center justify-center min-h-screen">
-        <div class="w-full max-w-md px-6">
-          <!-- Logo Placeholder -->
-          <div class="flex justify-center mb-8">
-            <img src="assets/Hey logo.png" alt="Logo" class="w-24 h-auto" />
-          </div>
-    
-          <!-- Form Card -->
-          <div class="p-8">
-            <h1 class="text-2xl font-bold text-center text-gray-800 mb-6 ">Log In</h1>
-            
-            <form [formGroup] = "signInFormData" (ngSubmit) = "signInUser()">
-              <ion-list class="bg-white">
-                <!-- Email Input -->
-                <ion-item class="mb-4" style="--background: #D3D3D3; --border-radius: 10px; --border-color: #fff5e1" >
-                  <ion-input
-                    class=" text-gray-800 " 
-                    type="email"
-                    label="Email"
-                    placeholder="Enter your email"
-                    labelPlacement="floating"
-                    fill="solid"
-                    clearInput="true"
-                    required="true"
-                    formControlName = "email"
-                  ></ion-input>
-                </ion-item>
-        
-                <!-- Password Input -->
-                <ion-item class="mb-4" style="--background: #D3D3D3; --border-radius: 10px; --border-color: #fff5e1">
-                  <ion-input
-                    class=" text-gray-800"
-                    type="password"
-                    label="Password"
-                    placeholder="Enter your password"
-                    labelPlacement="floating"
-                    fill="solid"
-                    clearInput="true"
-                    required="true"
-                    formControlName = "password"
-                  ></ion-input>
-                </ion-item>
-        
-                <!-- Links -->
-                <div class="flex justify-between text-sm text-gray-800 mb-4">
-                  <a href="#" class="hover:underline">Forgot Password?</a>
-                  <a href="#" class="hover:underline">Sign up</a>
-                </div>
-        
-                <!-- Submit Button -->
-                <ion-button
-                  expand="block"
-                  class=" font-semibold py-2 "
-                  color="light"
-                  type="submit"
-                >
-                  Sign In
-                </ion-button>
-              </ion-list>
-            </form>
-          </div>
-        </div>
+  <div class="flex items-center justify-center min-h-screen">
+    <ion-spinner
+      class="max-w-20 max-h-20"
+      name="circular"
+      color="light"
+    ></ion-spinner>
+  </div>
+  } @else {
+  <div class="flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md px-6">
+      <!-- Logo Placeholder -->
+      <div class="flex justify-center mb-8">
+        <img src="assets/Hey logo.png" alt="Logo" class="w-24 h-auto" />
       </div>
+
+      <!-- Form Card -->
+      <div class="p-8">
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">
+          Log In
+        </h1>
+
+        <form [formGroup]="signInFormData" (ngSubmit)="signInUser()">
+          <ion-list class="bg-white">
+            <!-- Email Input -->
+            <ion-item
+              class="mb-4"
+              style="
+                --background: #d3d3d3;
+                --border-radius: 10px;
+                --border-color: #fff5e1;
+              "
+            >
+              <ion-input
+                class="text-gray-800"
+                type="email"
+                label="Email"
+                placeholder="Enter your email"
+                labelPlacement="floating"
+                fill="solid"
+                clearInput="true"
+                required="true"
+                formControlName="email"
+              ></ion-input>
+            </ion-item>
+
+            <!-- Password Input -->
+            <ion-item
+              class="mb-4"
+              style="
+                --background: #d3d3d3;
+                --border-radius: 10px;
+                --border-color: #fff5e1;
+              "
+            >
+              <ion-input
+                class="text-gray-800"
+                type="password"
+                label="Password"
+                placeholder="Enter your password"
+                labelPlacement="floating"
+                fill="solid"
+                clearInput="true"
+                required="true"
+                formControlName="password"
+              ></ion-input>
+            </ion-item>
+
+            <!-- Links -->
+            <div class="flex justify-between text-sm text-gray-800 mb-4">
+              <a href="#" class="hover:underline">Forgot Password?</a>
+              <a href="#" class="hover:underline">Sign up</a>
+            </div>
+
+            <!-- Submit Button -->
+            <ion-button
+              expand="block"
+              class="font-semibold py-2"
+              color="light"
+              type="submit"
+            >
+              Sign In
+            </ion-button>
+          </ion-list>
+        </form>
+      </div>
+    </div>
+  </div>
   }
 </ion-content>
