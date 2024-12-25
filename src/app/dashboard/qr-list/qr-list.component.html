@@ -1,0 +1,10 @@
+<ion-list class="bg-white min-h-svh">
+  @for (qrCode of qrCodes; track qrCode.id;) {
+
+  <app-qr-card
+    [qrCode]="qrCode"
+    (editClick)="onEdit(qrCode)"
+    (deleteClick)="onDelete(qrCode)"
+  ></app-qr-card>
+  }
+</ion-list>

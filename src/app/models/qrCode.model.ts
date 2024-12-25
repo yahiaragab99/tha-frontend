@@ -1,12 +1,12 @@
 import { User } from './user.model';
 
 export interface QrCode {
-  id: string | null;
-  code: string | null;
+  id: string;
+  code: string | null | undefined;
 
-  itemName: string | null;
-  itemDetails?: string | null;
-  itemCategory?: string | null;
+  itemName: string | null | undefined;
+  itemDetails?: string | null | undefined;
+  itemCategory?: string | null | undefined;
   isClaimed?: boolean;
 
   userId?: string;

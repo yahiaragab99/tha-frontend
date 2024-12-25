@@ -60,24 +60,15 @@ export class SignInComponent implements OnInit {
 
   signInUser() {
     if (!this.signInFormData.valid) return;
-    console.log(this.signInFormData.value);
     this.isLoading = true;
     const email = this.signInFormData.value.email;
     const password = this.signInFormData.value.password;
-    // let isEmailRegistered: Boolean = false;
-    // this.authService.isEmailRegistered(email).subscribe({
-    //   next: (res) => {
-    //     isEmailRegistered = res;
-    //     console.log('r u there', isEmailRegistered);
-    //   },
-    // });
-
     this.authService.signIn(email, password).subscribe({
       next: (res) => {
+        console.log(res);
         if (!res || Object.keys(res).length === 0)
           throw new Error('Invalid credentials');
-
-        this.authService.setUserData(res?.user as User);
+        this.authService.setUserData(res.user as User);
         this.isLoading = false;
         this.router.navigate(['dashboard']);
       },

@@ -1,0 +1,114 @@
+<ion-modal #claimModal [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+  <ng-template>
+    <div
+      class="bg-white flex my-auto items-center justify-center ion-padding qr-modal"
+    >
+      @if (isLoading) {
+      <div class="flex items-center justify-center ion-margin-top">
+        <ion-spinner
+          class="max-w-20 max-h-20"
+          name="circular"
+          color="light"
+        ></ion-spinner>
+      </div>
+      } @else {
+      <div class="flex items-center justify-center ion-margin-top">
+        @if (scannedQrObject?.isClaimed) {
+        <h1>ALREADY CLAIMED</h1>
+        } @else if (!isClaimLoading && scannedQrCode) {
+
+        <div class="p-8">
+          <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">
+            Claim QR code
+          </h1>
+          <form [formGroup]="claimQrCodeForm" (ngSubmit)="submitClaim()">
+            <ion-list class="bg-white">
+              <ion-item
+                class="mb-4"
+                style="
+                  --background: #d3d3d3;
+                  --border-radius: 10px;
+                  --border-color: #fff5e1;
+                "
+              >
+                <ion-input
+                  class="text-gray-800"
+                  type="text"
+                  label="Item name"
+                  placeholder="Enter a name for your item"
+                  labelPlacement="floating"
+                  fill="solid"
+                  clearInput="true"
+                  required="true"
+                  formControlName="itemName"
+                ></ion-input>
+              </ion-item>
+
+              <ion-item
+                class="mb-4"
+                style="
+                  --background: #d3d3d3;
+                  --border-radius: 10px;
+                  --border-color: #fff5e1;
+                "
+              >
+                <ion-input
+                  class="text-gray-800"
+                  type="text"
+                  label="Description"
+                  placeholder="Provide more details"
+                  labelPlacement="floating"
+                  fill="solid"
+                  clearInput="true"
+                  required="false"
+                  formControlName="itemDetails"
+                ></ion-input>
+              </ion-item>
+
+              <ion-item
+                class="mb-4"
+                style="
+                  --background: #d3d3d3;
+                  --border-radius: 10px;
+                  --border-color: #fff5e1;
+                "
+              >
+                <ion-select
+                  label="Category"
+                  label-placement="floating"
+                  class="text-gray-800"
+                  formControlName="itemCategory"
+                >
+                  @for (itemCat of itemCategories; track itemCat.id) {
+                  <ion-select-option [value]="itemCat.id">{{
+                    itemCat.categoryName
+                  }}</ion-select-option>
+                  }
+                </ion-select>
+              </ion-item>
+
+              <ion-button
+                expand="block"
+                class="font-semibold py-2"
+                color="light"
+                type="submit"
+              >
+                Claim
+              </ion-button>
+            </ion-list>
+          </form>
+        </div>
+        } @else if (isClaimLoading) {
+        <ion-spinner
+          class="max-w-20 max-h-20"
+          name="circular"
+          color="light"
+        ></ion-spinner>
+
+        }
+      </div>
+
+      }
+    </div>
+  </ng-template>
+</ion-modal>

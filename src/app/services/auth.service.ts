@@ -1,8 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  firstValueFrom,
+  Observable,
+  tap,
+  throwError,
+} from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/user.model';
+import { Router } from '@angular/router';
 
 const API_URL = environment.serverUrl + '/auth';
 const LocalStorageUserKey = 'authUser';
@@ -11,6 +19,7 @@ const LocalStorageUserKey = 'authUser';
 })
 export class AuthService {
   authUser = new BehaviorSubject<User | null>(null);
+  router = inject(Router);
   private http = inject(HttpClient);
   constructor() {
     this.restoreUserFromLocalStorage();
@@ -35,7 +44,7 @@ export class AuthService {
     }
   }
   isEmailRegistered(email: string): Observable<Boolean> {
-    return this.http.post<Boolean>(`${API_URL}/is-email-registered`, { email });
+    return this.http.post<Boolean>(`${API_URL}/isemailregistered/${email}`, {});
   }
 
   signUp(
@@ -45,7 +54,7 @@ export class AuthService {
     lastName: string,
     phoneNumber: string
   ) {
-    return this.http.post(API_URL + '/sign-up', {
+    return this.http.post(API_URL + '/signup', {
       email,
       password,
       firstName,
@@ -53,16 +62,14 @@ export class AuthService {
       phoneNumber,
     });
   }
-  signIn(
-    email: string,
-    password: string // : Promise<Subscription> | Error
-  ) {
+  signIn(email: string, password: string) {
     return this.http.post<any>(
-      API_URL + '/log-in',
+      API_URL + '/login',
       { email, password },
       { withCredentials: true }
     );
   }
+
   getCurrentUser(): User | null {
     // Returns the current value of the BehaviorSubject
     return this.authUser.getValue();
@@ -74,27 +81,26 @@ export class AuthService {
 
     // set in LS
     localStorage.setItem(LocalStorageUserKey, JSON.stringify(user));
+
+    // set in session storage
+    sessionStorage.setItem('userId', user.id as string);
   }
 
   clearUserData() {
     this.authUser.next(null);
     localStorage.removeItem(LocalStorageUserKey);
+    sessionStorage.removeItem('userId');
   }
 
-  // signOut() {
-  //   this.http
-  //     .post(API_URL + '/logout', {}, { withCredentials: true })
-  //     .subscribe(() => {
-  //       this.clearUserData();
-
-  //       if (
-  //         this.currentRoute &&
-  //         !this.PINGING_ROUTES.includes(this.currentRoute)
-  //       ) {
-  //         this.router.navigateByUrl('/');
-  //       }
-  //     });
-  // }
+  signOut() {
+    // const userId = sessionStorage.getItem('userId') as string;
+    this.http
+      .post(API_URL + '/logout', {}, { withCredentials: true })
+      .subscribe(() => {
+        this.clearUserData();
+        this.router.navigateByUrl('/login');
+      });
+  }
   get isLoggedIn() {
     if (
       !localStorage.getItem(LocalStorageUserKey) ||

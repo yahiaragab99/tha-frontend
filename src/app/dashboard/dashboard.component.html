@@ -16,12 +16,8 @@
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab> -->
-  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
-    <ion-fab-button id="open-modal" (click)="startScan()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-  <ion-modal #modal [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+  <app-qr-scanner (scanned)="onQrScanned($event)"></app-qr-scanner>
+  <!-- <ion-modal #claimModal [initialBreakpoint]="1" [breakpoints]="[0, 1]">
     <ng-template>
       <div
         class="bg-white flex my-auto items-center justify-center ion-padding qr-modal"
@@ -36,15 +32,16 @@
         </div>
         } @else {
         <div class="flex items-center justify-center ion-margin-top">
-          @if(!isClaimLoading){ @if (scannedQrCode) { @if
-          (!scannedQrObject?.isClaimed) {
+          @if (scannedQrObject?.isClaimed) {
+          <h1>ALREADY CLAIMED</h1>
+          } @else if (!isClaimLoading && scannedQrCode) {
+
           <div class="p-8">
             <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">
               Claim QR code
             </h1>
             <form [formGroup]="claimQrCodeFormData" (ngSubmit)="claimQrCode()">
               <ion-list class="bg-white">
-                <!-- Item name Input -->
                 <ion-item
                   class="mb-4"
                   style="
@@ -66,7 +63,6 @@
                   ></ion-input>
                 </ion-item>
 
-                <!-- Item details Input -->
                 <ion-item
                   class="mb-4"
                   style="
@@ -88,7 +84,6 @@
                   ></ion-input>
                 </ion-item>
 
-                <!-- Item category Input -->
                 <ion-item
                   class="mb-4"
                   style="
@@ -97,17 +92,6 @@
                     --border-color: #fff5e1;
                   "
                 >
-                  <!-- <ion-input
-                    class="text-gray-800"
-                    type="text"
-                    label="Category"
-                    placeholder="Add a category"
-                    labelPlacement="floating"
-                    fill="solid"
-                    clearInput="true"
-                    required="false"
-                    formControlName="itemCategory"
-                  ></ion-input> -->
                   <ion-select
                     label="Category"
                     label-placement="floating"
@@ -133,60 +117,141 @@
               </ion-list>
             </form>
           </div>
-          } @else if (scannedQrObject?.isClaimed) {
-          <h1>ALREADY CLAIMED</h1>
-          } } } @else if (isClaimLoading) {
+          } @else if (isClaimLoading) {
           <ion-spinner
             class="max-w-20 max-h-20"
             name="circular"
             color="light"
           ></ion-spinner>
+
           }
         </div>
 
         }
       </div>
     </ng-template>
+  </ion-modal> -->
+
+  <ion-modal #editModal [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+    <ng-template>
+      <div
+        class="bg-white flex my-auto items-center justify-center ion-padding qr-modal"
+      >
+        @if (isEditLoading) {
+        <div class="flex items-center justify-center ion-margin-top">
+          <ion-spinner
+            class="max-w-20 max-h-20"
+            name="circular"
+            color="light"
+          ></ion-spinner>
+        </div>
+        } @else {
+        <div class="flex items-center justify-center ion-margin-top">
+          <div class="p-8">
+            <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">
+              Edit QR code
+            </h1>
+            <form [formGroup]="editQrCodeFormData" (ngSubmit)="editQrCode()">
+              <ion-list class="bg-white">
+                <ion-item
+                  class="mb-4"
+                  style="
+                    --background: #d3d3d3;
+                    --border-radius: 10px;
+                    --border-color: #fff5e1;
+                  "
+                >
+                  <ion-input
+                    class="text-gray-800"
+                    type="text"
+                    label="Item name"
+                    labelPlacement="floating"
+                    fill="solid"
+                    clearInput="true"
+                    required="true"
+                    formControlName="itemName"
+                  ></ion-input>
+                </ion-item>
+
+                <ion-item
+                  class="mb-4"
+                  style="
+                    --background: #d3d3d3;
+                    --border-radius: 10px;
+                    --border-color: #fff5e1;
+                  "
+                >
+                  <ion-input
+                    class="text-gray-800"
+                    type="text"
+                    label="Description"
+                    placeholder="Provide more details"
+                    labelPlacement="floating"
+                    fill="solid"
+                    clearInput="true"
+                    required="false"
+                    formControlName="itemDetails"
+                  ></ion-input>
+                </ion-item>
+
+                <ion-item
+                  class="mb-4"
+                  style="
+                    --background: #d3d3d3;
+                    --border-radius: 10px;
+                    --border-color: #fff5e1;
+                  "
+                >
+                  <ion-select
+                    label="Category"
+                    label-placement="floating"
+                    class="text-gray-800"
+                    clearInput="true"
+                    formControlName="itemCategory"
+                  >
+                    @for (itemCat of itemCategories; track itemCat.id) {
+                    <ion-select-option [value]="itemCat.id">{{
+                      itemCat.categoryName
+                    }}</ion-select-option>
+                    }
+                  </ion-select>
+                </ion-item>
+
+                <ion-button
+                  expand="block"
+                  class="font-semibold py-2"
+                  color="light"
+                  type="submit"
+                >
+                  Edit
+                </ion-button>
+              </ion-list>
+            </form>
+          </div>
+        </div>
+
+        }
+      </div>
+    </ng-template>
   </ion-modal>
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button id="open-modal" (click)="startScan()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
   <div
-    class="flex-row items-start justify-center max-h-svh mt-10 w-full max-w-md px-6"
+    class="flex-row items-start justify-center max-h-screen mt-10 w-full max-w-md px-6"
   >
-    <div>
-      <h1 class="text-2xl font-bold text-left text-gray-800 mb-6 px-6">
-        Hi, {{ currentUser?.firstName }}
-      </h1>
+    <div class="text-2xl font-bold text-left text-gray-800 mb-6 px-6">
+      <h1>Hi, {{ currentUser?.firstName }}</h1>
     </div>
-    <div class="w-full max-w-md px-6">
-      <ion-list class="bg-white">
-        @for (qrCode of qrCodes; track qrCode.id) {
-        <ion-card color="light">
-          <ion-card-header>
-            <ion-card-title>{{ qrCode.itemName }}</ion-card-title>
-            <ion-card-subtitle>{{ qrCode.itemDetails }}</ion-card-subtitle>
-          </ion-card-header>
-          <ion-card-content>
-            Reference code: {{ qrCode.code }}
-          </ion-card-content>
-          <div class="flex justify-between">
-            <ion-button fill="clear" (click)="editQrCode(qrCode)">
-              <ion-icon name="create" color="dark"></ion-icon>
-            </ion-button>
-            @if (isDeleteLoading && qrCode.id === qrCodeIdToDelete) {
-            <ion-spinner
-              class="max-h-5 max-w-5 mr-5 mt-5"
-              name="circular"
-              color="dark"
-            ></ion-spinner>
-            } @else {
-            <ion-button fill="clear" (click)="deleteQrCode(qrCode)">
-              <ion-icon name="trash-outline" color="light"></ion-icon>
-            </ion-button>
-            }
-          </div>
-        </ion-card>
-        }
-      </ion-list>
+    <div class="">
+      <app-qr-list
+        [qrCodes]="qrCodes"
+        (delete)="onDeleteQrCode($event)"
+        (edit)="onEditQrCodeRequest($event)"
+      ></app-qr-list>
     </div>
   </div>
   }

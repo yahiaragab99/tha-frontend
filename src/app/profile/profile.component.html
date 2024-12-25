@@ -1,0 +1,42 @@
+<ion-content class="ion-padding" style="--ion-background-color: #ffffff">
+  <div class="flex items-start justify-center min-h-screen mt-[25%]">
+    <div class="w-full max-w-md px-6">
+      <div class="flex justify-center mb-8">
+        <img src="../../assets/Hey logo.png" alt="Logo" class="w-24 h-auto" />
+      </div>
+      <ion-list class="w-full max-w-md space-y-4 px-10">
+        <ion-item class="w-full">
+          <ion-icon name="person" slot="start"></ion-icon>
+          <ion-label
+            >{{ currentUser?.firstName }} {{ currentUser?.lastName }}</ion-label
+          >
+        </ion-item>
+
+        <ion-item class="w-full">
+          <ion-icon name="mail" slot="start"></ion-icon>
+          <ion-label>{{ currentUser?.email }}</ion-label>
+        </ion-item>
+
+        <ion-item class="w-full">
+          <ion-icon name="call" slot="start"></ion-icon>
+          <ion-label>{{ currentUser?.phoneNumber }}</ion-label>
+        </ion-item>
+
+        <ion-item class="w-full">
+          <ion-icon name="pricetags" slot="start"></ion-icon>
+          <ion-label
+            >Item(s) claimed: {{ currentUser?.qrCodes?.length }}</ion-label
+          >
+        </ion-item>
+      </ion-list>
+      <div class="flex max-w-md px-10 justify-between mt-8">
+        <ion-button fill="clear">
+          <ion-icon name="create" color="dark"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" (click)="logout()">
+          <ion-icon name="log-out" color="dark"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

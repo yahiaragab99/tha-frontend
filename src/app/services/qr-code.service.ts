@@ -6,7 +6,8 @@ import { QrCode } from '../models/qrCode.model';
 import { body } from 'ionicons/icons';
 import { ItemCategory } from '../models/itemCategory.model';
 
-const API_BASE_URL = environment.serverUrl + '/qr-code';
+const API_BASE_URL = environment.serverUrl + '/qrcode';
+const CATEGORIES_BASE_URL = environment.serverUrl + '/category';
 @Injectable({
   providedIn: 'root',
 })
@@ -15,7 +16,9 @@ export class QrCodeService {
   constructor() {}
 
   getUserQrCodes(userId: string) {
-    return this.http.get(API_BASE_URL + '/user-qrs/' + userId);
+    return this.http.get(API_BASE_URL + '/user/' + userId, {
+      withCredentials: true,
+    });
   }
 
   deleteQrCode(id: string) {
@@ -27,7 +30,7 @@ export class QrCodeService {
   }
 
   updateQrCode(
-    code: string | null,
+    code: string | null | undefined,
     itemName: string,
     itemDetails: string,
     itemCategory: string,
@@ -44,6 +47,8 @@ export class QrCodeService {
   }
 
   getItemCategories(): Observable<ItemCategory[]> {
-    return this.http.get<ItemCategory[]>(API_BASE_URL + '/categories');
+    return this.http.get<ItemCategory[]>(CATEGORIES_BASE_URL + '/', {
+      withCredentials: true,
+    });
   }
 }

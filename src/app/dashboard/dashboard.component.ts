@@ -4,23 +4,15 @@ import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import {
   IonContent,
   IonSpinner,
-  IonCard,
   IonList,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonCardContent,
-  IonButton,
   IonIcon,
   IonFab,
   IonFabButton,
   IonModal,
-  IonItem,
-  IonInput,
-  IonSelect,
+  IonButton,
   IonSelectOption,
+  IonItem,
 } from '@ionic/angular/standalone';
-import { IonicModule } from '@ionic/angular';
 import {
   FormControl,
   FormGroup,
@@ -30,7 +22,6 @@ import {
 } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { add, create, trashOutline } from 'ionicons/icons';
-import { Router } from '@angular/router';
 import { QrCodeService } from '../services/qr-code.service';
 import { User } from '../models/user.model';
 import { AuthService } from '../services/auth.service';
@@ -46,6 +37,9 @@ import {
   takeUntil,
 } from 'rxjs';
 import { ItemCategory } from '../models/itemCategory.model';
+import * as _ from 'lodash';
+import { QrListComponent } from './qr-list/qr-list.component';
+import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -53,26 +47,22 @@ import { ItemCategory } from '../models/itemCategory.model';
   styleUrls: ['./dashboard.component.scss'],
   standalone: true,
   imports: [
-    IonItem,
-    IonButton,
-    IonCardContent,
-    IonCardSubtitle,
-    IonCardTitle,
-    IonCardHeader,
     IonList,
-    IonCard,
     IonContent,
     IonSpinner,
     CommonModule,
     IonIcon,
     IonFab,
     IonFabButton,
-    IonModal,
     FormsModule,
     ReactiveFormsModule,
-    IonInput,
-    IonSelect,
+    QrListComponent,
+    IonModal,
+    IonButton,
+    IonItem,
     IonSelectOption,
+    QrListComponent,
+    QrScannerComponent,
   ],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
@@ -81,7 +71,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   isLoading: boolean = false; // Indicates if data is loading
   isDeleteLoading: boolean = false;
   isEditLoading: boolean = false;
-  qrCodeIdToDelete: string | null = null;
+  qrCodeIdToDelete!: string;
   qrCodeToEdit: string | null = null;
   currentUser!: User | null; // Holds the current authenticated user
   noItemsFound: Boolean = false;
@@ -89,10 +79,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   scannedQrCode: string | null = null;
   scannedQrObject: QrCode | null = null;
   claimQrCodeFormData!: FormGroup;
+  editQrCodeFormData!: FormGroup;
   isClaimLoading: boolean = false;
   itemName: string | null = null;
   itemCategories: ItemCategory[] = [];
-  @ViewChild('modal', { static: false }) modal?: IonModal;
+  editQrCodeCode!: string | null | undefined;
+  editQrName!: string | null | undefined;
+  editQrDetails!: string | null | undefined;
+  editQrCategory!: string | null | undefined;
+  editQrCodeObject: QrCode | null = null;
+  @ViewChild('claimModal', { static: false }) claimModal!: IonModal;
+  @ViewChild('editModal', { static: false }) editModal!: IonModal;
 
   private destroy$ = new Subject<void>();
 
@@ -110,13 +107,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.itemCategories = await firstValueFrom(
       this.qrCodeService.getItemCategories()
     );
-    console.log(this.itemCategories);
+
     this.claimQrCodeFormData = new FormGroup({
       itemName: new FormControl('', [Validators.required]),
       itemDetails: new FormControl(''),
       itemCategory: new FormControl(''),
       isClaimed: new FormControl(false),
     });
+
     this.authService.authUser
       .pipe(
         takeUntil(this.destroy$),
@@ -126,88 +124,75 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (user && (!user.qrCodes || user.qrCodes.length === 0)) {
           this.fetchQrCodes();
         } else if (user?.qrCodes) {
-          this.qrCodes = user.qrCodes;
+          this.qrCodes = _.uniqBy(user.qrCodes, 'id');
         }
       });
+    // console.log(this.qrCodes);
     this.isLoading = false;
   }
 
-  async openModal() {
-    if (this.modal) {
-      await this.modal.present();
+  async openModal(modal: IonModal) {
+    if (modal) {
+      await modal.present();
     } else {
       console.error('Modal reference is not available');
     }
   }
-  async closeModal() {
-    if (this.modal) {
-      await this.modal.dismiss();
+  async closeModal(modal: IonModal) {
+    if (modal) {
+      await modal.dismiss();
     } else {
       console.error('Modal reference is not available');
     }
   }
 
-  checkPermission = async () => {
-    try {
-      const status = await BarcodeScanner.checkPermission({ force: true });
-      if (status.granted) {
-        return true;
-      } else return false;
-    } catch (error) {
-      console.log(error);
-      throw new Error();
-    }
-  };
-  startScan = async () => {
-    try {
-      // console.log(this.authService.getCurrentUser()?.email);
-      const permission = await this.checkPermission();
-      if (!permission) return;
+  // checkPermission = async () => {
+  //   try {
+  //     const status = await BarcodeScanner.checkPermission({ force: true });
+  //     if (status.granted) {
+  //       return true;
+  //     } else return false;
+  //   } catch (error) {
+  //     console.log(error);
+  //     throw new Error();
+  //   }
+  // };
+  // async startScan() {
+  //   // console.log(this.authService.getCurrentUser()?.email);
+  //   const permission = await this.checkPermission();
+  //   if (!permission) return;
+  //   await BarcodeScanner.hideBackground();
+  //   document.querySelector('body')?.classList.add('scanner-active');
+  //   const result = await BarcodeScanner.startScan();
+  //   if (result.hasContent) {
+  //     this.scannedQrCode = result.content.split('=')[1];
+  //     this.isLoading = false;
+  //     this.scannedQrObject = await firstValueFrom(
+  //       this.qrCodeService.getQrCodeByCode(this.scannedQrCode)
+  //     );
+  //     await this.openModal(this.claimModal);
+  //     if (this.scannedQrObject?.isClaimed) {
+  //       this.isLoading = false;
+  //       return;
+  //     } else if (!this.scannedQrObject?.isClaimed) {
+  //     }
 
-      await BarcodeScanner.hideBackground();
+  //     this.isLoading = false;
 
-      document.querySelector('body')?.classList.add('scanner-active');
+  //     BarcodeScanner.showBackground();
+  //     document.querySelector('body')?.classList.remove('scanner-active');
+  //   }
+  // }
 
-      const result = await BarcodeScanner.startScan();
-      if (result.hasContent) {
-        this.scannedQrCode = result.content.split('=')[1];
-        console.log(this.scannedQrCode);
-
-        if (this.scannedQrCode) {
-          this.isLoading = true;
-          this.scannedQrObject = await firstValueFrom(
-            this.qrCodeService.getQrCodeByCode(this.scannedQrCode)
-          );
-          console.log(this.scannedQrObject);
-
-          await this.openModal();
-          if (this.scannedQrObject?.isClaimed) {
-            this.isLoading = false;
-            return;
-          } else if (!this.scannedQrObject?.isClaimed) {
-          }
-
-          this.isLoading = false;
-        }
-        BarcodeScanner.showBackground();
-        document.querySelector('body')?.classList.remove('scanner-active');
-      }
-    } catch (error) {
-      console.log(error);
-      await this.stopScan();
-      throw new Error();
-    }
-  };
-
-  stopScan = async () => {
-    try {
-      BarcodeScanner.showBackground();
-      await BarcodeScanner.stopScan();
-      document.querySelector('body')?.classList.remove('scanner-active');
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // stopScan = async () => {
+  //   try {
+  //     BarcodeScanner.showBackground();
+  //     await BarcodeScanner.stopScan();
+  //     document.querySelector('body')?.classList.remove('scanner-active');
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   claimQrCode() {
     if (!this.claimQrCodeFormData.valid) return;
 
@@ -218,8 +203,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const isClaimed = true;
     const userEmail = this.authService.getCurrentUser()?.email;
     const qrCode = this.scannedQrCode;
-    console.log(itemCategory);
-    console.log(this.claimQrCodeFormData.value);
+    // console.log(itemCategory);
+    // console.log(this.claimQrCodeFormData.value);
     this.qrCodeService
       .updateQrCode(
         qrCode,
@@ -230,17 +215,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
         userEmail
       )
       .subscribe((data) => {
-        console.log(data);
+        // console.log(data);
         this.isClaimLoading = false;
-        this.closeModal();
+        this.closeModal(this.claimModal);
         this.fetchQrCodes();
       });
   }
-  private fetchQrCodes(): void {
+  fetchQrCodes(): void {
     // Remove userId parameter
     // Use getCurrentUser to dynamically get the current user
     const currentUser = this.authService.getCurrentUser();
-    console.log(currentUser);
+    // console.log(currentUser);
     // Early return if no user is found
     if (!currentUser || !currentUser.id) {
       console.warn('No authenticated user found');
@@ -263,10 +248,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (res: any) => {
-          if (!res || res.length === 0) {
+          if (!res.items || res.items.length === 0) {
             this.noItemsFound = true;
           } else {
-            const lostQrsCasted: QrCode[] = res.map(
+            const lostQrsCasted: QrCode[] = res.items.map(
               (qrCode: {
                 id: string;
                 userId: string;
@@ -289,11 +274,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
             // Update user in auth service
             const updatedUser: User = {
               ...currentUser,
-              qrCodes: [...(currentUser.qrCodes || []), ...lostQrsCasted],
+              qrCodes: _.uniqBy([...lostQrsCasted], 'id'),
             };
 
             this.authService.setUserData(updatedUser);
             this.qrCodes = lostQrsCasted;
+            console.log(this.qrCodes);
             this.noItemsFound = false;
           }
 
@@ -302,7 +288,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
   }
 
-  deleteQrCode(qrCode: QrCode) {
+  onDeleteQrCode(qrCode: QrCode) {
     // Get the current user from the AuthService
     // const currentUser = this.authService.getCurrentUser();
 
@@ -356,13 +342,40 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
   }
 
-  editQrCode(qrCode: QrCode) {
+  async onEditQrCodeRequest(qrCode?: QrCode) {
     if (!this.currentUser) {
       console.error('No authenticated user found');
       return;
     }
-    this.isEditLoading = true;
-    this.qrCodeToEdit = qrCode.id;
+    // this.qrCodeToEdit = qrCode.id;
+    if (qrCode) {
+      this.editQrCodeCode = qrCode.code;
+      this.editQrCodeFormData = new FormGroup({
+        itemName: new FormControl(qrCode.itemName, [Validators.required]),
+        itemDetails: new FormControl(qrCode.itemDetails),
+        itemCategory: new FormControl(qrCode.itemCategory),
+        isClaimed: new FormControl(true),
+      });
+      await this.openModal(this.editModal);
+    } else {
+      this.isEditLoading = true;
+      this.qrCodeService
+        .updateQrCode(
+          this.editQrCodeCode,
+          this.editQrCodeFormData.value.itemName,
+          this.editQrCodeFormData.value.itemDetails!,
+          this.editQrCodeFormData.value.itemCategory!,
+          this.editQrCodeFormData.value.isClaimed!,
+          this.currentUser.email
+        )
+        .subscribe({
+          next: (data) => {
+            this.isEditLoading = false;
+            this.closeModal(this.editModal);
+            this.fetchQrCodes();
+          },
+        });
+    }
   }
 
   // trackItems(index: number, qrCode: QrCode) {
