@@ -6,6 +6,9 @@ import {
   IonList,
   IonIcon,
   IonButton,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
 } from '@ionic/angular/standalone';
 import { AuthService } from '../services/auth.service';
 import { User } from '../models/user.model';
@@ -17,7 +20,17 @@ import { mail, person, call, pricetags, create, logOut } from 'ionicons/icons';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
   standalone: true,
-  imports: [IonButton, IonItem, IonContent, IonLabel, IonList, IonIcon],
+  imports: [
+    IonButton,
+    IonItem,
+    IonContent,
+    IonLabel,
+    IonList,
+    IonIcon,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+  ],
 })
 export class ProfileComponent implements OnInit {
   currentUser!: User | null;

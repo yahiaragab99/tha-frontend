@@ -1,12 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import {
   IonCard,
   IonCardHeader,
@@ -17,6 +9,8 @@ import {
   IonIcon,
   IonSpinner,
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { create, trashOutline } from 'ionicons/icons';
 import { QrCode } from 'src/app/models/qrCode.model';
 import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
@@ -38,7 +32,7 @@ import { QrCodeService } from 'src/app/services/qr-code.service';
     IonSpinner,
   ],
 })
-export class QrCardComponent implements OnInit {
+export class QrCardComponent {
   currentUser!: User | null;
   authService = inject(AuthService);
   qrCodeService = inject(QrCodeService);
@@ -58,9 +52,7 @@ export class QrCardComponent implements OnInit {
   @Output() editClick = new EventEmitter<void>();
   @Output() deleteClick = new EventEmitter<void>();
 
-  constructor() {}
-
-  ngOnInit() {
-    console.log('');
+  constructor() {
+    addIcons({ create, trashOutline });
   }
 }

@@ -7,17 +7,20 @@ ion-fab-button {
     --color: black;
   }
 
-  .qr-modal {
-    width: 100%;
-    height: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-  }
+  // .qr-modal {
+  //   width: 100%;
+  //   height: 100%;
+  //   padding: 8px;
+  // }
   
   ion-modal {
-    --height: auto;
+    --height: 50%;
+    --border-radius: 16px;
+  }
+  
+  ion-modal ion-content {
+    --background: white;
+    --overflow: hidden;
   }
 
 

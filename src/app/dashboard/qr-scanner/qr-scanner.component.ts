@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { add } from 'ionicons/icons';
 @Component({
   selector: 'app-qr-scanner',
   templateUrl: './qr-scanner.component.html',
@@ -11,6 +13,9 @@ import { IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
 export class QrScannerComponent implements OnDestroy {
   @Output() scanned = new EventEmitter<string>();
 
+  constructor() {
+    addIcons({ add });
+  }
   async startScan() {
     // Check permission, hide background, etc.
     const status = await BarcodeScanner.checkPermission({ force: true });

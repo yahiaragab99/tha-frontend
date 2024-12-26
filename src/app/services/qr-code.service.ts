@@ -3,8 +3,6 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { QrCode } from '../models/qrCode.model';
-import { body } from 'ionicons/icons';
-import { ItemCategory } from '../models/itemCategory.model';
 
 const API_BASE_URL = environment.serverUrl + '/qrcode';
 const CATEGORIES_BASE_URL = environment.serverUrl + '/category';
@@ -22,32 +20,42 @@ export class QrCodeService {
   }
 
   deleteQrCode(id: string) {
-    return this.http.delete(API_BASE_URL + '/delete/' + id);
+    return this.http.delete(API_BASE_URL + '/' + id, {
+      withCredentials: true,
+    });
   }
 
   getQrCodeByCode(code: string): Observable<QrCode> {
-    return this.http.get<QrCode>(API_BASE_URL + '/code/' + code);
+    return this.http.get<QrCode>(API_BASE_URL + '/code/' + code, {
+      withCredentials: true,
+    });
   }
 
   updateQrCode(
     code: string | null | undefined,
     itemName: string,
     itemDetails: string,
-    itemCategory: string,
+    itemCategoryId: string,
     isClaimed: boolean,
-    email: string | null | undefined
+    userId: string | null | undefined
   ): Observable<any> {
-    return this.http.put<any>(API_BASE_URL + '/claim/' + code, {
-      itemName,
-      itemDetails,
-      itemCategory,
-      isClaimed,
-      email,
-    });
+    return this.http.put<any>(
+      API_BASE_URL + '/' + code,
+      {
+        itemName,
+        itemDetails,
+        itemCategoryId,
+        isClaimed,
+        userId,
+      },
+      {
+        withCredentials: true,
+      }
+    );
   }
 
-  getItemCategories(): Observable<ItemCategory[]> {
-    return this.http.get<ItemCategory[]>(CATEGORIES_BASE_URL + '/', {
+  getItemCategories() {
+    return this.http.get(CATEGORIES_BASE_URL + '/', {
       withCredentials: true,
     });
   }

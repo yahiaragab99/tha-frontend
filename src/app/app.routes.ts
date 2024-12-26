@@ -20,25 +20,23 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        pathMatch: 'full',
         component: DashboardComponent,
         canActivate: [authGuard],
       },
       {
         path: 'profile',
-        pathMatch: 'full',
         component: ProfileComponent,
         canActivate: [authGuard],
       },
     ],
   },
   {
-    path: 'sign-in',
+    path: 'login',
     component: SignInComponent,
     canActivate: [reverseAuthGuard],
   },
   {
-    path: 'sign-up',
+    path: 'signup',
     component: SignUpComponent,
     canActivate: [reverseAuthGuard],
   },

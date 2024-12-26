@@ -1,5 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { QrCode } from 'src/app/models/qrCode.model';
 import {
   IonModal,
@@ -10,7 +15,14 @@ import {
   IonSelect,
   IonButton,
   IonSelectOption,
+  IonHeader,
+  IonToolbar,
+  IonLabel,
+  IonTitle,
+  IonButtons,
+  IonContent,
 } from '@ionic/angular/standalone';
+import { ItemCategory } from 'src/app/models/itemCategory.model';
 
 @Component({
   selector: 'app-claim-modal',
@@ -18,6 +30,12 @@ import {
   styleUrls: ['./claim-modal.component.scss'],
   standalone: true,
   imports: [
+    IonContent,
+    IonButtons,
+    IonTitle,
+    IonLabel,
+    IonToolbar,
+    IonHeader,
     IonModal,
     IonSpinner,
     IonList,
@@ -26,12 +44,15 @@ import {
     IonSelect,
     IonButton,
     IonSelectOption,
+    ReactiveFormsModule,
   ],
 })
-export class ClaimModalComponent {
+export class ClaimModalComponent implements OnInit {
   @Input() qrCode?: QrCode | null; // or just the code string
   @Input() isLoading: boolean = false;
   @Output() claim = new EventEmitter<{ formData: any }>();
+  @Input() itemCategories: ItemCategory[] = [];
+  @Input() claimModalRef!: IonModal;
 
   // Usually best to define the form in OnInit, but you can do it inline
   claimQrCodeForm = new FormGroup({
@@ -42,8 +63,16 @@ export class ClaimModalComponent {
 
   isClaimLoading = false;
 
+  async ngOnInit() {
+    if (this.qrCode) {
+      this.claimQrCodeForm.patchValue({
+        itemName: this.qrCode.itemName,
+        itemDetails: this.qrCode.itemDetails,
+        itemCategory: this.qrCode.itemCategoryId,
+      });
+    }
+  }
   // Reference to IonModal if you want two-way control from outside
-  @Input() claimModalRef!: IonModal;
 
   async submitClaim() {
     if (!this.claimQrCodeForm.valid) return;
