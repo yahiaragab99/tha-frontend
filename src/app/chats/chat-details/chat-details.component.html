@@ -1,0 +1,15 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>{{ chat?.itemName }} details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ chat?.itemName }} details</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <app-messages-list [messages]="messages"></app-messages-list>
+</ion-content>

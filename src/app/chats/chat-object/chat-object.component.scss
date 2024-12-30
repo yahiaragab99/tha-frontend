@@ -1,0 +1,14 @@
+.chat-item {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    
+    ion-button {
+      margin: 0;
+      --padding-start: 8px;
+      --padding-end: 8px;
+    }
+    
+    ion-icon {
+      font-size: 18px;
+    }
+  }

@@ -6,6 +6,9 @@ import { SignUpComponent } from './auth/sign-up/sign-up.component';
 import { TabsComponent } from './tabs/tabs.component';
 import { ProfileComponent } from './profile/profile.component';
 import { reverseAuthGuard } from './auth/guards/reverse-auth.guard';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { ChatsComponent } from './chats/chats.component';
+import { ChatDetailsComponent } from './chats/chat-details/chat-details.component';
 
 export const routes: Routes = [
   {
@@ -19,6 +22,11 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'notifications',
+        component: NotificationsComponent,
+        canActivate: [authGuard],
+      },
+      {
         path: 'dashboard',
         component: DashboardComponent,
         canActivate: [authGuard],
@@ -26,6 +34,16 @@ export const routes: Routes = [
       {
         path: 'profile',
         component: ProfileComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'chats',
+        component: ChatsComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'chatsdetails',
+        component: ChatDetailsComponent,
         canActivate: [authGuard],
       },
     ],

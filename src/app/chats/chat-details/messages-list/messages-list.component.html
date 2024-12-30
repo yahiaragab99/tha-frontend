@@ -1,0 +1,6 @@
+<ion-list class="bg-white min-h-svh">
+  @for (message of messages; track message.id;) {
+
+  <app-messages-object [message]="message"></app-messages-object>
+  }
+</ion-list>

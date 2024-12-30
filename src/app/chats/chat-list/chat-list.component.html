@@ -1,0 +1,9 @@
+<ion-list class="bg-white min-h-svh">
+  @for (chat of userChats; track chat.id;) {
+
+  <app-chat-object
+    [chat]="chat"
+    (deleteClick)="onDelete(chat)"
+  ></app-chat-object>
+  }
+</ion-list>

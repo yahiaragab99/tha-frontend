@@ -14,7 +14,6 @@ import {
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { provideHttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
 
 bootstrapApplication(AppComponent, {
   providers: [

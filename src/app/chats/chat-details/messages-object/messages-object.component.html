@@ -1,0 +1,21 @@
+<ion-item lines="full" class="message-item">
+  <div class="flex flex-col w-full space-y-2 py-2">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <ion-text color="medium" class="text-sm">
+        {{ message.createdAt }}
+      </ion-text>
+    </div>
+
+    <!-- Message Content -->
+    <div class="flex items-start space-x-2">
+      <ion-icon
+        name="chatbubble"
+        size="small"
+        color="primary"
+        class="mt-1"
+      ></ion-icon>
+      <ion-text>{{ message.message }}</ion-text>
+    </div>
+  </div>
+</ion-item>

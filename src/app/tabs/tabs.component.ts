@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   IonTabs,
   IonTabBar,
@@ -7,7 +7,7 @@ import {
   IonLabel,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { home, person } from 'ionicons/icons';
+import { home, person, notifications, chatbox } from 'ionicons/icons';
 @Component({
   selector: 'app-tabs',
   templateUrl: './tabs.component.html',
@@ -17,10 +17,7 @@ import { home, person } from 'ionicons/icons';
 })
 export class TabsComponent {
   constructor() {
-    addIcons({
-      home,
-      person,
-    });
+    addIcons({ notifications, home, chatbox, person });
   }
 
   // ngOnInit() {}

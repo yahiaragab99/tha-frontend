@@ -1,0 +1,10 @@
+<ion-list class="bg-white min-h-svh">
+  @for (notification of notifications; track notification.id;) {
+
+  <app-notification-object
+    [notification]="notification"
+    (deleteClick)="onDelete(notification)"
+    (readClick)="onRead(notification)"
+  ></app-notification-object>
+  }
+</ion-list>
