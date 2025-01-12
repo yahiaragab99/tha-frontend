@@ -6,9 +6,16 @@ import {
   IonIcon,
   IonItem,
   IonText,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { trashOutline, informationCircle } from 'ionicons/icons';
+import {
+  trashOutline,
+  informationCircle,
+  chevronForward,
+} from 'ionicons/icons';
 import { Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat.service';
 
@@ -17,7 +24,18 @@ import { ChatService } from 'src/app/services/chat.service';
   templateUrl: './chat-object.component.html',
   styleUrls: ['./chat-object.component.scss'],
   standalone: true,
-  imports: [IonSpinner, IonIcon, IonButton, IonItem, IonText],
+  imports: [
+    IonItemOptions,
+    IonItemSliding,
+    IonSpinner,
+    IonIcon,
+    IonButton,
+    IonItem,
+    IonText,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
+  ],
 })
 export class ChatObjectComponent {
   @Input() chat!: Chat;
@@ -28,7 +46,7 @@ export class ChatObjectComponent {
 
   isDeleteLoading: boolean = false;
   constructor() {
-    addIcons({ trashOutline, informationCircle });
+    addIcons({ chevronForward, informationCircle, trashOutline });
   }
 
   openChatDetails() {

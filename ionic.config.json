@@ -1,7 +1,15 @@
 {
-  "name": "tha-frontend",
+  "name": "TheHeyApp",
   "integrations": {
     "capacitor": {}
   },
-  "type": "angular-standalone"
+  "type": "angular-standalone",
+  "icons": {
+    "ios": {
+      "icon": "./src/assets/icon-only.png"
+    },
+    "android": {
+      "icon": "./src/assets/icon-only.png"
+    }
+  }
 }

@@ -10,10 +10,19 @@
       <ion-title size="large">Notifications</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  @if (!notifications) {
+  <div class="font-bold flex items-center justify-center w-full h-full">
+    <ion-text> You don't have any notifications </ion-text>
+  </div>
+  } @else {
   <app-notification-list
     [notifications]="notifications"
     (delete)="onDeleteNotification($event)"
     (read)="onReadNotification($event)"
   >
   </app-notification-list>
+  }
 </ion-content>

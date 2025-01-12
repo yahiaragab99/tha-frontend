@@ -16,5 +16,6 @@ export interface Notification {
   itemdetails: string;
 
   messageid?: string;
+  senderphonenumber?: string;
   message: Message;
 }

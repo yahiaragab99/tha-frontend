@@ -4,7 +4,26 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" [fullscreen]="true">
+<ion-content class="ion-padding" fullscreen>
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Profile</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-modal
+    #editProfileModal
+    [breakpoints]="[0, 0.6, 0.7, 1.0]"
+    [initialBreakpoint]="0.6"
+  >
+    <ng-template>
+      <app-profile-edit-modal
+        [userData]="currentUser"
+        [editProfileModalRef]="editProfileModal"
+        (save)="onSaveProfile($event)"
+      ></app-profile-edit-modal>
+    </ng-template>
+  </ion-modal>
   <!-- <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Hi, {{ currentUser?.firstName }}</ion-title>
@@ -12,9 +31,9 @@
   </ion-header> -->
   <div class="flex items-start justify-center min-h-screen mt-[25%]">
     <div class="w-full max-w-md px-6">
-      <div class="flex justify-center mb-8">
+      <!-- <div class="flex justify-center mb-8">
         <img src="../../assets/Hey logo.png" alt="Logo" class="w-24 h-auto" />
-      </div>
+      </div> -->
       <ion-list class="w-full max-w-md space-y-4 px-10">
         <ion-item class="w-full">
           <ion-icon name="person" slot="start"></ion-icon>
@@ -41,7 +60,7 @@
         </ion-item>
       </ion-list>
       <div class="flex max-w-md px-10 justify-between mt-8">
-        <ion-button fill="clear">
+        <ion-button fill="clear" (click)="openEditModal()">
           <ion-icon name="create" color="dark"></ion-icon>
         </ion-button>
         <ion-button fill="clear" (click)="logout()">

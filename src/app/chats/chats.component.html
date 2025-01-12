@@ -10,6 +10,15 @@
       <ion-title size="large">Chats</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  @if (!userChats || userChats.length === 0) {
+  <div class="font-bold flex items-center justify-center w-full h-full">
+    <ion-text> You don't have any chats </ion-text>
+  </div>
+  } @else {
   <app-chat-list [userChats]="userChats" (delete)="onDeleteChat($event)">
   </app-chat-list>
+  }
 </ion-content>

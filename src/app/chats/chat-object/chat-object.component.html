@@ -1,45 +1,49 @@
-<ion-item lines="full" class="chat-item" (click)="openChatDetails()">
-  <div class="flex flex-col w-full space-y-3 py-2">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-      <div class="flex flex-col">
-        <ion-text color="primary" class="font-medium">
-          {{ chat.itemName }}
-        </ion-text>
-        <ion-text color="medium" class="text-sm">
-          Total messages: {{ chat.messages.length }}
-        </ion-text>
+<ion-item-sliding lines="full" class="chat-item">
+  <ion-item>
+    <div class="flex flex-col w-full space-y-3 py-2">
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <div class="flex flex-col">
+          <ion-text color="primary" class="font-medium">
+            {{ chat.itemName }}
+          </ion-text>
+          <ion-text color="medium" class="text-sm">
+            Total messages: {{ chat.messages.length }}
+          </ion-text>
+          <div class="flex items-start space-x-2">
+            <ion-icon
+              name="information-circle"
+              size="small"
+              color="tertiary"
+              class="mt-1"
+            ></ion-icon>
+            <ion-text>{{ chat.itemDetails }}</ion-text>
+          </div>
+        </div>
+
+        <div class="flex items-center align-middle">
+          <ion-button fill="clear" (click)="openChatDetails()" class="h-8">
+            <ion-icon name="chevron-forward"></ion-icon>
+          </ion-button>
+          @if (isDeleteLoading) {
+          <ion-spinner
+            name="circular"
+            color="dark"
+            class="h-5 w-5 mr-2"
+          ></ion-spinner>
+          } @else { }
+        </div>
       </div>
 
-      <!-- Delete Action -->
-      <div class="flex items-center">
-        @if (isDeleteLoading) {
-        <ion-spinner
-          name="circular"
-          color="dark"
-          class="h-5 w-5 mr-2"
-        ></ion-spinner>
-        } @else {
-        <ion-button
-          fill="clear"
-          (click)="deleteClick.emit(); $event.stopPropagation()"
-          class="h-8"
-        >
-          <ion-icon name="trash-outline" color="danger"></ion-icon>
-        </ion-button>
-        }
-      </div>
+      <!-- Content -->
     </div>
-
-    <!-- Content -->
-    <div class="flex items-start space-x-2">
-      <ion-icon
-        name="information-circle"
-        size="small"
-        color="tertiary"
-        class="mt-1"
-      ></ion-icon>
-      <ion-text>{{ chat.itemDetails }}</ion-text>
-    </div>
-  </div>
-</ion-item>
+  </ion-item>
+  <ion-item-options>
+    <ion-item-option
+      (click)="deleteClick.emit(); $event.stopPropagation()"
+      expandable
+      color="danger"
+      >Delete</ion-item-option
+    >
+  </ion-item-options>
+</ion-item-sliding>

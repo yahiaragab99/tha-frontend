@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Message } from 'src/app/models/message.model';
 import { IonIcon, IonItem, IonText } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { trashOutline, chatbubble } from 'ionicons/icons';
+import { trashOutline, chatbubble, call } from 'ionicons/icons';
 
 @Component({
   selector: 'app-messages-object',
@@ -16,6 +16,6 @@ export class MessagesObjectComponent {
   @Input() message!: Message;
   @Output() deleteClick = new EventEmitter<void>();
   constructor() {
-    addIcons({ chatbubble, trashOutline });
+    addIcons({ chatbubble, call, trashOutline });
   }
 }

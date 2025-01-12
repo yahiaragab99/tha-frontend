@@ -14,8 +14,12 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { addIcons } from 'ionicons';
+import { closeCircle, lockClosed } from 'ionicons/icons';
+import { ToastService } from 'src/app/services/toast.service';
+import { User } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-sign-up',
@@ -31,14 +35,19 @@ import { AuthService } from 'src/app/services/auth.service';
     IonSpinner,
     FormsModule,
     ReactiveFormsModule,
+    RouterModule,
   ],
 })
 export class SignUpComponent implements OnInit {
   authService = inject(AuthService);
   isLoading: Boolean = false;
   router = inject(Router);
+  toastService = inject(ToastService);
   signUpFormData!: FormGroup;
-  constructor() {}
+  isEmailValid: Boolean = true;
+  constructor() {
+    addIcons({ closeCircle });
+  }
 
   ngOnInit() {
     this.signUpFormData = new FormGroup({
@@ -75,15 +84,33 @@ export class SignUpComponent implements OnInit {
     this.authService
       .signUp(email, password, firstName, lastName, phoneNumber)
       .subscribe({
-        next: (res) => {
+        next: (res: any) => {
           console.log(res);
+          this.toastService.presentToast('bottom', 'Signup successful', 2000);
+          this.authService.setUserData(res.user as User, res.token);
           this.isLoading = false;
-          this.router.navigate(['sign-in']);
+
+          this.router.navigate(['dashboard']);
         },
         error: (err) => {
           this.isLoading = false;
-          console.log(err);
+          this.toastService.presentToast('bottom', err.error.message, 2000);
         },
       });
+  }
+
+  checkEmail() {
+    const email = this.signUpFormData.value.email;
+    this.authService.isEmailRegistered(email).subscribe({
+      next: (res) => {
+        if (res == true) {
+          this.isEmailValid = false;
+          return;
+        }
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
 }

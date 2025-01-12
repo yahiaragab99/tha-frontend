@@ -9,6 +9,7 @@ export interface Message {
   itemName?: string | null | undefined;
   itemDetails?: string | null | undefined;
   message?: string | null | undefined;
+  senderPhoneNumber?: string | null | undefined;
   isPreset?: boolean;
   qrCode?: Partial<QrCode>;
 

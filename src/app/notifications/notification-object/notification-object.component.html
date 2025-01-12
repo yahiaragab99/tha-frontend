@@ -1,73 +1,93 @@
-<ion-item lines="full" class="notification-item">
-  <div class="flex flex-col w-full space-y-3 py-2">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-      <div class="flex items-center justify-between space-x-2 w-full">
-        <ion-text color="primary" class="font-medium">
-          {{ notification.notificationtypetitle }}
-        </ion-text>
-        <ion-text color="medium" class="text-sm">
-          {{ notification.createdat }}
-        </ion-text>
+<ion-item-sliding lines="full" class="notification-item">
+  <ion-item>
+    <div class="flex flex-col w-full space-y-3 py-2">
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between space-x-2 w-full">
+          <ion-text color="primary" class="font-medium">
+            {{ notification.notificationtypetitle }}
+          </ion-text>
+          <ion-text color="medium" class="text-sm">
+            {{ notification.createdat }}
+          </ion-text>
+        </div>
+
+        <!-- Read/Delete Actions -->
+        <div class="flex items-center">
+          @if (isDeleteLoading) {
+          <ion-spinner
+            name="circular"
+            color="dark"
+            class="h-5 w-5 mr-2"
+          ></ion-spinner>
+          } @else { @if (notification.isread) {
+          <ion-button fill="clear" class="h-8">
+            <ion-icon name="checkmark-done" color="primary"></ion-icon>
+          </ion-button>
+          } @else {
+          <ion-button fill="clear" (click)="readClick.emit()" class="h-8">
+            <ion-icon name="checkmark" color="dark"></ion-icon>
+          </ion-button>
+          }
+          <!-- <ion-button fill="clear" (click)="deleteClick.emit()" class="h-8">
+            <ion-icon name="trash-outline" color="danger"></ion-icon>
+          </ion-button> -->
+          }
+        </div>
       </div>
 
-      <!-- Read/Delete Actions -->
-      <div class="flex items-center">
-        @if (isDeleteLoading) {
-        <ion-spinner
-          name="circular"
-          color="dark"
-          class="h-5 w-5 mr-2"
-        ></ion-spinner>
-        } @else { @if (notification.isread) {
-        <ion-button fill="clear" class="h-8">
-          <ion-icon name="checkmark-done" color="primary"></ion-icon>
-        </ion-button>
-        } @else {
-        <ion-button fill="clear" (click)="readClick.emit()" class="h-8">
-          <ion-icon name="checkmark" color="dark"></ion-icon>
-        </ion-button>
-        }
-        <ion-button fill="clear" (click)="deleteClick.emit()" class="h-8">
-          <ion-icon name="trash-outline" color="danger"></ion-icon>
-        </ion-button>
+      <!-- Content -->
+      <div class="flex flex-col space-y-2">
+        @if (notification.messageid) {
+        <div class="flex items-start space-x-2">
+          <ion-icon
+            name="chatbubbles"
+            size="small"
+            color="primary"
+            class="mt-1"
+          ></ion-icon>
+          <ion-text>{{ notification.message }}</ion-text>
+        </div>
+        } @if (notification.itemname) {
+        <div class="flex items-start space-x-2">
+          <ion-icon
+            name="pricetag"
+            size="small"
+            color="secondary"
+            class="mt-1"
+          ></ion-icon>
+          <ion-text>{{ notification.itemname }}</ion-text>
+        </div>
+        } @if (notification.itemdetails) {
+        <div class="flex items-start space-x-2">
+          <ion-icon
+            name="information-circle"
+            size="small"
+            color="tertiary"
+            class="mt-1"
+          ></ion-icon>
+          <ion-text>{{ notification.itemdetails }}</ion-text>
+        </div>
+        } @if (notification.senderphonenumber) {
+        <div class="flex items-start space-x-2">
+          <ion-icon
+            name="call"
+            size="small"
+            color="tertiary"
+            class="mt-1"
+          ></ion-icon>
+          <ion-text>{{ notification.senderphonenumber }}</ion-text>
+        </div>
         }
       </div>
     </div>
-
-    <!-- Content -->
-    <div class="flex flex-col space-y-2">
-      @if (notification.messageid) {
-      <div class="flex items-start space-x-2">
-        <ion-icon
-          name="chatbubbles"
-          size="small"
-          color="primary"
-          class="mt-1"
-        ></ion-icon>
-        <ion-text>{{ notification.message }}</ion-text>
-      </div>
-      } @if (notification.itemname) {
-      <div class="flex items-start space-x-2">
-        <ion-icon
-          name="pricetag"
-          size="small"
-          color="secondary"
-          class="mt-1"
-        ></ion-icon>
-        <ion-text>{{ notification.itemname }}</ion-text>
-      </div>
-      } @if (notification.itemdetails) {
-      <div class="flex items-start space-x-2">
-        <ion-icon
-          name="information-circle"
-          size="small"
-          color="tertiary"
-          class="mt-1"
-        ></ion-icon>
-        <ion-text>{{ notification.itemdetails }}</ion-text>
-      </div>
-      }
-    </div>
-  </div>
-</ion-item>
+  </ion-item>
+  <ion-item-options>
+    <ion-item-option
+      (click)="deleteClick.emit(); $event.stopPropagation()"
+      expandable
+      color="danger"
+      >Delete</ion-item-option
+    >
+  </ion-item-options>
+</ion-item-sliding>

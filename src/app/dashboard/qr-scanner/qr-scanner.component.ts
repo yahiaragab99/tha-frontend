@@ -1,8 +1,12 @@
 import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
-import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
+import { CapacitorBarcodeScanner } from '@capacitor/barcode-scanner';
 import { IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
+
+const SCAN_INSTRUCTIONS = 'Scan the code on the sticker.';
+// const SCAN_BUTTON = true;
+// const SCAN_TEXT = 'Scan';
 @Component({
   selector: 'app-qr-scanner',
   templateUrl: './qr-scanner.component.html',
@@ -11,36 +15,40 @@ import { add } from 'ionicons/icons';
   imports: [IonFab, IonFabButton, IonIcon],
 })
 export class QrScannerComponent implements OnDestroy {
+  // scannerActive = false;
   @Output() scanned = new EventEmitter<string>();
 
   constructor() {
     addIcons({ add });
   }
+
   async startScan() {
-    // Check permission, hide background, etc.
-    const status = await BarcodeScanner.checkPermission({ force: true });
-    if (!status.granted) return;
-
-    await BarcodeScanner.hideBackground();
-    document.body.classList.add('scanner-active');
-
-    const result = await BarcodeScanner.startScan();
-    if (result.hasContent) {
-      // Assuming your content is something like "qrCode=12345"
-      const qrCodeValue = result.content.split('=')[1];
-      this.scanned.emit(qrCodeValue);
-      await this.stopScan();
+    try {
+      const result = await CapacitorBarcodeScanner.scanBarcode({
+        hint: 17,
+        scanInstructions: SCAN_INSTRUCTIONS,
+      });
+      if (result.ScanResult) {
+        const qrCodeValue = result.ScanResult.split('=')[1];
+        // console.log(qrCodeValue);
+        this.scanned.emit(qrCodeValue);
+      }
+      return result.ScanResult;
+    } catch (error) {
+      throw new Error();
     }
   }
 
-  async stopScan() {
-    await BarcodeScanner.showBackground();
-    await BarcodeScanner.stopScan();
-    document.body.classList.remove('scanner-active');
-  }
+  // async stopScan() {
+  //   this.scannerActive = false; // Hide scanner UI
+  //   document.body.classList.remove('scanner-active');
+  //   document.body.classList.remove('hide-other-components'); // Show UI components again
+  //   // await BarcodeScanner.stopScan();
+  // }
 
   ngOnDestroy() {
     // Make sure to stop scanning if component destroyed
-    this.stopScan();
+    // this.stopScan();
+    console.log('destroy');
   }
 }

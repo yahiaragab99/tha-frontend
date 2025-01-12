@@ -40,6 +40,46 @@
 // @import '@ionic/angular/css/palettes/dark.system.css';
 
 body.scanner-active {
-    --background: transparent;
-    --ion-background-color: transparent;
-  }
+  --background: transparent;
+  --ion-background-color: transparent;
+}
+.scanner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Dark overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* Make sure the scanner UI appears on top */
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 15px;
+  z-index: 10000; 
+  background-color: red;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.hide-other-components * {
+  visibility: hidden; /* This will hide all the elements in the body */
+}
+
+.hide-other-components {
+  pointer-events: none; /* Disable interactions with hidden elements */
+}
+
+// ion-modal {
+//   --height: auto; /* Allows the modal to size based on content */
+//   --max-height: 90%; /* Limits the modal to 90% of the screen height */
+//   --border-radius: 10px; /* Adds rounded corners */
+// }

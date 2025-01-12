@@ -6,7 +6,7 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content [scrollY]="false" class="ion-padding" fullscreen>
+<ion-content [scrollY]="true" class="ion-padding" fullscreen>
   <form [formGroup]="editQrCodeForm" (ngSubmit)="submitEdit()">
     <ion-item
       class="mb-4"
@@ -75,6 +75,8 @@
 
     <ion-button
       type="submit"
+      expand="block"
+      class="font-semibold py-2"
       [disabled]="isEditLoading || !editQrCodeForm.valid"
     >
       Save
@@ -82,126 +84,3 @@
     </ion-button>
   </form>
 </ion-content>
-
-<!-- <ion-header>
-  <ion-toolbar>
-    <ion-title>Modal</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="ion-padding">
-  <p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni illum quidem
-    recusandae ducimus quos reprehenderit. Veniam, molestias quos, dolorum
-    consequuntur nisi deserunt omnis id illo sit cum qui. Eaque, dicta.
-  </p>
-</ion-content> -->
-
-<!-- <div
-    class="bg-white flex my-auto items-center justify-center ion-padding qr-modal"
-  >
-    <div class="flex items-center justify-center ion-margin-top">
-
-    </div>
-  </div> -->
-
-<!-- <ng-template>
-  <div
-    class="bg-white flex my-auto items-center justify-center ion-padding qr-modal"
-  >
-    @if (isEditLoading) {
-    <div class="flex items-center justify-center ion-margin-top">
-      <ion-spinner
-        class="max-w-20 max-h-20"
-        name="circular"
-        color="light"
-      ></ion-spinner>
-    </div>
-    } @else {
-    <div class="flex items-center justify-center ion-margin-top">
-      <div class="p-8">
-        <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">
-          Edit QR code
-        </h1>
-        <form [formGroup]="editQrCodeFormData" (ngSubmit)="editQrCode()">
-          <ion-list class="bg-white">
-            <ion-item
-              class="mb-4"
-              style="
-                --background: #d3d3d3;
-                --border-radius: 10px;
-                --border-color: #fff5e1;
-              "
-            >
-              <ion-input
-                class="text-gray-800"
-                type="text"
-                label="Item name"
-                labelPlacement="floating"
-                fill="solid"
-                clearInput="true"
-                required="true"
-                formControlName="itemName"
-              ></ion-input>
-            </ion-item>
-
-            <ion-item
-              class="mb-4"
-              style="
-                --background: #d3d3d3;
-                --border-radius: 10px;
-                --border-color: #fff5e1;
-              "
-            >
-              <ion-input
-                class="text-gray-800"
-                type="text"
-                label="Description"
-                placeholder="Provide more details"
-                labelPlacement="floating"
-                fill="solid"
-                clearInput="true"
-                required="false"
-                formControlName="itemDetails"
-              ></ion-input>
-            </ion-item>
-
-            <ion-item
-              class="mb-4"
-              style="
-                --background: #d3d3d3;
-                --border-radius: 10px;
-                --border-color: #fff5e1;
-              "
-            >
-              <ion-select
-                label="Category"
-                label-placement="floating"
-                class="text-gray-800"
-                clearInput="true"
-                formControlName="itemCategory"
-              >
-                @for (itemCat of itemCategories; track itemCat.id) {
-                <ion-select-option [value]="itemCat.id">{{
-                  itemCat.categoryName
-                }}</ion-select-option>
-                }
-              </ion-select>
-            </ion-item>
-
-            <ion-button
-              expand="block"
-              class="font-semibold py-2"
-              color="light"
-              type="submit"
-            >
-              Edit
-            </ion-button>
-          </ion-list>
-        </form>
-      </div>
-    </div>
-
-    }
-  </div>
-</ng-template> -->

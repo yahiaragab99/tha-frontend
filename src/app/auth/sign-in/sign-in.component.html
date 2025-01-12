@@ -4,7 +4,7 @@
     <ion-spinner
       class="max-w-20 max-h-20"
       name="circular"
-      color="light"
+      color="dark"
     ></ion-spinner>
   </div>
   } @else {
@@ -70,7 +70,9 @@
             <!-- Links -->
             <div class="flex justify-between text-sm text-gray-800 mb-4">
               <a href="#" class="hover:underline">Forgot Password?</a>
-              <a href="#" class="hover:underline">Sign up</a>
+              <a href="#" class="hover:underline" [routerLink]="'/signup'"
+                >Sign up</a
+              >
             </div>
 
             <!-- Submit Button -->

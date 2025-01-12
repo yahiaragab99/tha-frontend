@@ -13,7 +13,6 @@ export class MessagesListComponent implements OnInit {
   @Input() messages: any[] = [];
   constructor() {}
 
-  // TODO format createdAt
   ngOnInit() {
     this.messages = this.messages.map((message) => {
       return {

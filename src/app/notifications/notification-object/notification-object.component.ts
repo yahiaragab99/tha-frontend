@@ -6,6 +6,9 @@ import {
   IonIcon,
   IonItem,
   IonText,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -15,13 +18,23 @@ import {
   pricetag,
   checkmarkDone,
   checkmark,
+  call,
 } from 'ionicons/icons';
 @Component({
   selector: 'app-notification-object',
   templateUrl: './notification-object.component.html',
   styleUrls: ['./notification-object.component.scss'],
   standalone: true,
-  imports: [IonButton, IonSpinner, IonIcon, IonItem, IonText],
+  imports: [
+    IonButton,
+    IonSpinner,
+    IonIcon,
+    IonItem,
+    IonText,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
+  ],
 })
 export class NotificationObjectComponent {
   @Input() notification!: Notification;
@@ -38,6 +51,7 @@ export class NotificationObjectComponent {
       trashOutline,
       checkmarkDone,
       checkmark,
+      call,
     });
   }
 }

@@ -1,16 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import {
-  BehaviorSubject,
-  catchError,
-  firstValueFrom,
-  Observable,
-  tap,
-  throwError,
-} from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/user.model';
 import { Router } from '@angular/router';
+import { StorageService } from './storage.service';
+import { Preferences } from '@capacitor/preferences';
 
 const API_URL = environment.serverUrl + '/auth';
 const LocalStorageUserKey = 'authUser';
@@ -20,28 +15,55 @@ const LocalStorageUserKey = 'authUser';
 export class AuthService {
   authUser = new BehaviorSubject<User | null>(null);
   router = inject(Router);
+  storageService = inject(StorageService);
   private http = inject(HttpClient);
+  // private advancedHttp = inject(HTTP);
   constructor() {
-    this.restoreUserFromLocalStorage();
+    this.initialize();
   }
-  private restoreUserFromLocalStorage() {
-    const storedUser = localStorage.getItem('authUser');
+
+  private async initialize() {
+    await this.storageService.init();
+    await this.restoreUserFromLocalStorage();
+  }
+
+  private async restoreUserFromLocalStorage() {
+    const storedUser = await this.storageService.get(LocalStorageUserKey);
     if (storedUser) {
       try {
-        const parsedUser: User = JSON.parse(storedUser);
-
+        const parsedUser: User = storedUser;
+        // console.log('parsedUser', parsedUser);
         // Validate the parsed user data if needed
         if (this.isValidUser(parsedUser)) {
           this.authUser.next(parsedUser);
+          const currentRoute = this.router.url;
+          if (currentRoute == '/login' || currentRoute == '/signup') {
+            this.router.navigate(['dashboard']);
+          }
         } else {
           // Clear invalid localStorage data
-          localStorage.removeItem('authUser');
+          this.storageService.remove(LocalStorageUserKey);
         }
       } catch (error) {
         console.error('Error parsing stored user:', error);
-        localStorage.removeItem('authUser');
+        this.storageService.remove(LocalStorageUserKey);
       }
     }
+  }
+
+  autoLogin() {
+    Preferences.get({ key: 'jwt' }).then((res) => {
+      if (res.value) {
+        this.getLoggedInUser().subscribe({
+          next: (res: any) => {
+            if (!res || Object.keys(res).length === 0)
+              throw new Error('Invalid credentials');
+            this.setUserData(res.user as User);
+            this.router.navigate(['dashboard']);
+          },
+        });
+      }
+    });
   }
   isEmailRegistered(email: string): Observable<Boolean> {
     return this.http.post<Boolean>(`${API_URL}/isemailregistered/${email}`, {});
@@ -63,37 +85,40 @@ export class AuthService {
     });
   }
   signIn(email: string, password: string) {
-    return this.http.post<any>(
+    const response = this.http.post<any>(
       API_URL + '/login',
       { email, password },
       { withCredentials: true }
     );
+    response.subscribe({
+      next: (res) => {
+        const { token } = res;
+        Preferences.set({ key: 'jwt', value: token });
+      },
+    });
+    return response;
   }
 
   getCurrentUser(): User | null {
     // Returns the current value of the BehaviorSubject
-    return this.authUser.getValue();
+    return this.authUser.value;
   }
 
-  setUserData(user: User) {
-    // push to the subject
+  setUserData(user: User | null, token?: string) {
     this.authUser.next(user);
-
-    // set in LS
-    localStorage.setItem(LocalStorageUserKey, JSON.stringify(user));
-
-    // set in session storage
-    sessionStorage.setItem('userId', user.id as string);
+    this.storageService.set(LocalStorageUserKey, user);
+    if (!token) return;
+    Preferences.set({ key: 'jwt', value: token });
   }
 
   clearUserData() {
     this.authUser.next(null);
-    localStorage.removeItem(LocalStorageUserKey);
-    sessionStorage.removeItem('userId');
+    this.storageService.remove(LocalStorageUserKey);
+    // this.storageService.clear();
+    Preferences.remove({ key: 'jwt' });
   }
 
   signOut() {
-    // const userId = sessionStorage.getItem('userId') as string;
     this.http
       .post(API_URL + '/logout', {}, { withCredentials: true })
       .subscribe(() => {
@@ -101,21 +126,31 @@ export class AuthService {
         this.router.navigateByUrl('/login');
       });
   }
-  get isLoggedIn() {
-    if (
-      !localStorage.getItem(LocalStorageUserKey) ||
-      localStorage.getItem(LocalStorageUserKey) == null
-    ) {
-      console.log("Didn't pass Auth Guard Front End!!");
+  async isLoggedIn() {
+    const userLocalStorage = await this.storageService.get(LocalStorageUserKey);
+    // console.log('hi', userLocalStorage);
+    if (!userLocalStorage || userLocalStorage == null) {
       return false;
     }
-    console.log('Passed Auth Guard Front End!!');
-
     return true;
   }
 
   private isValidUser(user: User): boolean {
     // Add your custom validation logic
     return user && user.id != null;
+  }
+
+  updateUser(user: User) {
+    return this.http.put(API_URL + '/user/' + user.id, {
+      newUserData: user,
+    });
+  }
+
+  getUser(userId: string | null | undefined) {
+    return this.http.get(API_URL + '/user/' + userId);
+  }
+
+  getLoggedInUser() {
+    return this.http.get(API_URL + '/user/me', { withCredentials: true });
   }
 }

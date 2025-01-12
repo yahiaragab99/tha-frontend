@@ -1,0 +1,100 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Edit profile</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content [scrollY]="true" class="ion-padding" fullscreen>
+  <form [formGroup]="editProfileForm" (ngSubmit)="submitEdit()">
+    <ion-item
+      class="mb-4"
+      style="
+        --background: #d3d3d3;
+        --border-radius: 10px;
+        --border-color: #fff5e1;
+      "
+    >
+      <ion-input
+        class="text-gray-800"
+        type="text"
+        label="First name"
+        labelPlacement="floating"
+        fill="solid"
+        clearInput="true"
+        required="true"
+        formControlName="firstName"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item
+      class="mb-4"
+      style="
+        --background: #d3d3d3;
+        --border-radius: 10px;
+        --border-color: #fff5e1;
+      "
+    >
+      <ion-input
+        class="text-gray-800"
+        type="text"
+        label="Last name"
+        labelPlacement="floating"
+        fill="solid"
+        clearInput="true"
+        required="false"
+        formControlName="lastName"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item
+      class="mb-4"
+      style="
+        --background: #d3d3d3;
+        --border-radius: 10px;
+        --border-color: #fff5e1;
+      "
+    >
+      <ion-input
+        class="text-gray-800"
+        type="text"
+        label="Email"
+        labelPlacement="floating"
+        fill="solid"
+        clearInput="true"
+        required="false"
+        formControlName="email"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item
+      class="mb-4"
+      style="
+        --background: #d3d3d3;
+        --border-radius: 10px;
+        --border-color: #fff5e1;
+      "
+    >
+      <ion-input
+        class="text-gray-800"
+        type="text"
+        label="Phone number"
+        labelPlacement="floating"
+        fill="solid"
+        clearInput="true"
+        required="false"
+        formControlName="phoneNumber"
+      ></ion-input>
+    </ion-item>
+
+    <ion-button
+      type="submit"
+      expand="block"
+      class="font-semibold py-2"
+      [disabled]="!editProfileForm.valid"
+    >
+      Save
+    </ion-button>
+  </form>
+</ion-content>

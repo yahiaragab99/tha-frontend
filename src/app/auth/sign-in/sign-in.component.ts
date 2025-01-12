@@ -16,7 +16,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { User } from 'src/app/models/user.model';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sign-in',
@@ -30,6 +30,7 @@ import { Router } from '@angular/router';
     IonItem,
     IonButton,
     IonSpinner,
+    RouterModule,
     FormsModule,
     ReactiveFormsModule,
   ],
@@ -41,7 +42,8 @@ export class SignInComponent implements OnInit {
   isLoading: Boolean = false;
   constructor() {}
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.authService.autoLogin();
     this.signInFormData = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [
@@ -65,7 +67,6 @@ export class SignInComponent implements OnInit {
     const password = this.signInFormData.value.password;
     this.authService.signIn(email, password).subscribe({
       next: (res) => {
-        console.log(res);
         if (!res || Object.keys(res).length === 0)
           throw new Error('Invalid credentials');
         this.authService.setUserData(res.user as User);
@@ -74,7 +75,6 @@ export class SignInComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        console.log(err);
       },
     });
   }

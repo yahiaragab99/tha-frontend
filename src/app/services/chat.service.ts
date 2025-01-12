@@ -29,4 +29,8 @@ export class ChatService {
   getSelectedChat() {
     return this.selectedChat.getValue();
   }
+
+  deleteMessage(messageId: string) {
+    return this.http.delete(API_BASE_URL + '/' + messageId);
+  }
 }
