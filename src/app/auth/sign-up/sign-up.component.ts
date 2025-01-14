@@ -20,6 +20,7 @@ import { addIcons } from 'ionicons';
 import { closeCircle, lockClosed } from 'ionicons/icons';
 import { ToastService } from 'src/app/services/toast.service';
 import { User } from 'src/app/models/user.model';
+import { NgxMaterialIntlTelInputComponent } from 'ngx-material-intl-tel-input';
 
 @Component({
   selector: 'app-sign-up',
@@ -36,6 +37,7 @@ import { User } from 'src/app/models/user.model';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
+    NgxMaterialIntlTelInputComponent,
   ],
 })
 export class SignUpComponent implements OnInit {
