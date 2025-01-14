@@ -1,4 +1,11 @@
-import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { CapacitorBarcodeScanner } from '@capacitor/barcode-scanner';
 import { IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -14,14 +21,25 @@ const SCAN_INSTRUCTIONS = 'Scan the code on the sticker.';
   standalone: true,
   imports: [IonFab, IonFabButton, IonIcon],
 })
-export class QrScannerComponent implements OnDestroy {
+export class QrScannerComponent implements OnChanges {
   // scannerActive = false;
   @Output() scanned = new EventEmitter<string>();
+  @Output() openedClaimModal = new EventEmitter<void>();
+  @Input() scanEvent = false;
+  // @Input() startScan = false;
 
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    if (changes['scanEvent'] && this.scanEvent) {
+      await this.startScan();
+    }
+  }
   constructor() {
     addIcons({ add });
   }
 
+  async onOpenClaimModal() {
+    this.openedClaimModal.emit();
+  }
   async startScan() {
     try {
       const result = await CapacitorBarcodeScanner.scanBarcode({
@@ -37,18 +55,5 @@ export class QrScannerComponent implements OnDestroy {
     } catch (error) {
       throw new Error();
     }
-  }
-
-  // async stopScan() {
-  //   this.scannerActive = false; // Hide scanner UI
-  //   document.body.classList.remove('scanner-active');
-  //   document.body.classList.remove('hide-other-components'); // Show UI components again
-  //   // await BarcodeScanner.stopScan();
-  // }
-
-  ngOnDestroy() {
-    // Make sure to stop scanning if component destroyed
-    // this.stopScan();
-    console.log('destroy');
   }
 }

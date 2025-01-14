@@ -80,6 +80,7 @@ export class ClaimModalComponent implements OnInit {
 
     // Gather the form data
     const formData = {
+      id: this.qrCode?.id,
       ...this.claimQrCodeForm.value,
       isClaimed: true,
     };

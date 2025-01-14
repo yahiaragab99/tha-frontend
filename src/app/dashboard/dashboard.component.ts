@@ -22,6 +22,8 @@ import { ClaimModalComponent } from '../dashboard/claim-modal/claim-modal.compon
 import { EditModalComponent } from '../dashboard/edit-modal/edit-modal.component';
 import { ItemCategory } from '../models/itemCategory.model';
 import { ToastService } from '../services/toast.service';
+import { ClaimByCodeModalComponent } from './claim-by-code-modal/claim-by-code-modal.component';
+import { MainClaimModalComponent } from './main-claim-modal/main-claim-modal.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,8 +46,8 @@ import { ToastService } from '../services/toast.service';
     IonRefresher,
     IonRefresherContent,
     IonText,
-    // Angular/Ionic modules...
-    // Our newly created components:
+    ClaimByCodeModalComponent,
+    MainClaimModalComponent,
   ],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
@@ -56,11 +58,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   @ViewChild('editModal') editModal!: IonModal;
   @ViewChild('claimModal') claimModal!: IonModal;
+  @ViewChild('mainClaimModal') mainClaimModal!: IonModal;
+  @ViewChild('codeClaimModal') codeClaimModal!: IonModal;
+  // @ViewChild('')
 
   currentUser!: User | null;
   itemCategories!: ItemCategory[] | [];
   qrCodes: QrCode[] = [];
   scannedQrCode: string | null = null;
+  startScanEvent: boolean = false;
 
   // Track modals being open or not
   isClaimModalOpen = false;
@@ -111,6 +117,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
       },
     });
   }
+
+  onShowClaimModal() {
+    this.mainClaimModal.present();
+  }
+
+  onClaimByScan() {
+    this.startScanEvent = true;
+    this.mainClaimModal.dismiss();
+  }
+
+  onClaimByRef() {
+    this.mainClaimModal.dismiss();
+    this.codeClaimModal.present();
+  }
   onQrScanned(code: string) {
     // This is fired from QrScannerComponent
     // Possibly fetch the details from the backend:
@@ -148,11 +168,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Handle claim form submission from the ClaimModalComponent
   onClaimQrCode(eventData: { formData: any }) {
     const { formData } = eventData;
-    console.log(formData);
-    if (!this.scannedQrCode) return;
     this.qrCodeService
       .updateQrCode(
-        this.scannedQrCode,
+        formData.id,
         formData.itemName,
         formData.itemDetails,
         formData.itemCategory,
